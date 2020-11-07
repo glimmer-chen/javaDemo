@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.longIt.ecshop.mapper.OrderMapper">
+
+     <!-- 保存订单    useGeneratedKeys="true":需要获取主键值   keyColumn="id":主键的列名  
+     keyProperty="id":将主键对应的值存放在对象的哪个属性中 -->
+     <insert id="saveOrder" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+          insert into ec_order(order_code,create_date,amount,user_id) values(#{orderCode},#{createDate},#{amount},#{userId})
+     </insert>
+     
+     
+     <!-- 根据用户的id获取订单信息 -->
+     <select id="getAllOrderByUserId" resultMap="OrderMapper">
+         select * from ec_order where user_id = #{userId}
+     </select>
+     
+     <resultMap type="Order" id="OrderMapper">
+           <result column="order_code" property="orderCode"/>
+           <result column="create_date" property="createDate"/>
+           <result column="send_date" property="sendDate"/>
+           <!-- 根据订单的id获取订单明细   订单与订单明细==>一对多      property="":根据订单id获取订单明细，将
+           订单明细放在订单对象的哪个属性中-->
+           <collection property="items" column="id" select="org.longIt.ecshop.mapper.OrderItemMapper.getItemsByOrderId"></collection>
+           
+     </resultMap>
+</mapper>
